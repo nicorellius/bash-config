@@ -129,12 +129,4 @@ fi
 export WORKON_HOME=$HOME/dev/virtenvs
 source /usr/local/bin/virtualenvwrapper.sh
 
-parse_git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1\]/'
-}
-
-parse_hg_branch() {
-    hg branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1\]/'
-}
-
 . ~/.bash_prompt
