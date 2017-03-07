@@ -1,3 +1,5 @@
+# bash prompt colorizarion for python virtualenvs, git, and hg branches
+
 # The various escape codes that we can use to color our prompt.
         RED="\[\033[0;31m\]"
      YELLOW="\[\033[1;33m\]"
@@ -19,23 +21,20 @@ function set_virtualenv () {
 }
 
 hg_branch() {
-    hg branch 2> /dev/null | awk '{print $1}'
+    hg branch 2> /dev/null | awk '{print "hg["$1"] "}'
 }
 
 git_branch() {
- 	git branch 2> /dev/null | awk '{print $1}'
+ 	# git branch 2> /dev/null | awk '{print $1}'
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/git[\1] /'
 }
 
 # Set the full bash prompt.
 function set_bash_prompt () {
     # Set the PYTHON_VIRTUALENV variable.
     set_virtualenv
-
-	if [ "$color_prompt" = yes ]; then
-		PS1="${PYTHON_VIRTUALENV}${debian_chroot:+($debian_chroot)}\[\033[01;37m\]\u\[\033[01;33m\]@\[\033[01;35m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $ "
-	else	
-		PS1="${PYTHON_VIRTUALENV}${debian_chroot:+($debian_chroot)}\[\033[01;37m\]\u\[\033[01;33m\]@\[\033[01;35m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] ${GREEN}hg[$(hg_branch)]${COLOR_NONE}$ "
-	fi
+	
+	PS1="${PYTHON_VIRTUALENV}${debian_chroot:+($debian_chroot)}\[\033[01;37m\]\u\[\033[01;33m\]@\[\033[01;35m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] ${GREEN}$(git_branch)$(hg_branch)${COLOR_NONE}$ "
 }
 
 # Tell bash to execute this function just before displaying its prompt.
